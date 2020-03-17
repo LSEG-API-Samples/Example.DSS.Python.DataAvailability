@@ -72,10 +72,9 @@ def createReportTemplate():
                               ("Headers", []),
                               ("Trailers", []),
                               ("ContentFields", [
-                                  OrderedDict([("FieldName","Instrument ID")]),
-                                  OrderedDict([("FieldName","Security Description")]),
-                                  OrderedDict([("FieldName","Universal Close Price Date")]),
-                                  OrderedDict([("FieldName","Universal Close Price")])
+                                  OrderedDict([("FieldName","Bid Price")]),
+                                  OrderedDict([("FieldName","Ask Price")]),
+                                  OrderedDict([("FieldName","Trade Date")])
                                   ]),
                               ("Condition",None)])
 
