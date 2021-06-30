@@ -9,9 +9,9 @@ statusCheckAttempts = int(10)
 Login = '<username>'
 Password = '<password>'
 
-urlCreateSchedule = 'https://hosted.datascopeapi.reuters.com/RestApi/v1/Extractions/Schedules'
-urlCreateReports = 'https://hosted.datascopeapi.reuters.com/ServiceLayer/Extractions/ReportTemplates'
-urlCreateList = 'https://hosted.datascopeapi.reuters.com/RestApi/v1/Extractions/InstrumentLists'
+urlCreateSchedule = 'https://selectapi.datascope.refinitiv.com/RestApi/v1/Extractions/Schedules'
+urlCreateReports = 'https://selectapi.datascope.refinitiv.com/ServiceLayer/Extractions/ReportTemplates'
+urlCreateList = 'https://selectapi.datascope.refinitiv.com/RestApi/v1/Extractions/InstrumentLists'
 
 global done
 urlFile = ''
@@ -19,7 +19,7 @@ ExtractedFileId = 0
 
 def getAuthToken(header):
     global myToken, URLpartialPath
-    urlGetToken = 'https://hosted.datascopeapi.reuters.com/RestApi/v1/Authentication/RequestToken'
+    urlGetToken = 'https://selectapi.datascope.refinitiv.com/RestApi/v1/Authentication/RequestToken'
     
     loginData = json.dumps({'Credentials':{'Password':Password,'Username':Login}})
     resp = requests.post(urlGetToken, loginData, headers=header)
@@ -34,7 +34,7 @@ def getAuthToken(header):
 def createInstrumentList():
     header = {'Content-Type': 'application/json; odata.metadata=minimal', 'Authorization': myToken}
 
-    instrumentListData = json.dumps({"@odata.type": "#ThomsonReuters.Dss.Api.Extractions.SubjectLists.InstrumentList",
+    instrumentListData = json.dumps({"@odata.type": "#DataScope.Select.Api.Extractions.SubjectLists.InstrumentList",
 							"Name": "myInstrumentList"})
     resp = requests.post(urlCreateList, instrumentListData, headers=header)
     if resp.status_code != 201:
@@ -48,7 +48,7 @@ def createInstrumentList():
 def appendInstrument(listId, iList):
     header = {'Content-Type': 'application/json; odata.metadata=minimal', 'Authorization': myToken}
 
-    urlAppendList = 'https://hosted.datascopeapi.reuters.com/RestApi/v1/Extractions/InstrumentLists(\'' + listId + '\')/ThomsonReuters.Dss.Api.Extractions.InstrumentListAppendIdentifiers'
+    urlAppendList = 'https://selectapi.datascope.refinitiv.com/RestApi/v1/Extractions/InstrumentLists(\'' + listId + '\')/DataScope.Select.Api.Extractions.InstrumentListAppendIdentifiers'
     instrumentList = []
     for instrument in iList:
         instrumentList.append(OrderedDict([("Identifier",instrument),("IdentifierType","Ric")]))
@@ -66,7 +66,7 @@ def appendInstrument(listId, iList):
 def createReportTemplate():
     header = {'Content-Type': 'application/json; odata.metadata=minimal', 'Authorization': myToken}
 
-    reportData = OrderedDict([("@odata.type","#ThomsonReuters.Dss.Api.Extractions.ReportTemplates.EndOfDayPricingReportTemplate"),
+    reportData = OrderedDict([("@odata.type","#DataScope.Select.Api.Extractions.ReportTemplates.EndOfDayPricingReportTemplate"),
                               ("ShowColumnHeaders",True),
                               ("Name", "myEodTemplateName"),
                               ("Headers", []),
@@ -100,10 +100,10 @@ def createScheduleExtration(listIdToUse,reportId):
                            ('ReportTemplateId',reportId),
                            ('TimeZone','Coordinated Universal Time'),
                            ('Recurrence',OrderedDict([
-                               ('@odata.type','#ThomsonReuters.Dss.Api.Extractions.Schedules.SingleRecurrence'),
+                               ('@odata.type','#DataScope.Select.Api.Extractions.Schedules.SingleRecurrence'),
                                ('ExtractionDateTime', today),
                                ('IsImmediate',False)])),
-                           ('Trigger',OrderedDict([('@odata.type','#ThomsonReuters.Dss.Api.Extractions.Schedules.DataAvailabilityTrigger'),('LimitReportToTodaysData',True)]))])
+                           ('Trigger',OrderedDict([('@odata.type','#DataScope.Select.Api.Extractions.Schedules.DataAvailabilityTrigger'),('LimitReportToTodaysData',True)]))])
     createDataAvailabilitySchedData = json.dumps(schData, sort_keys=False)
     currDT = datetime.datetime.strftime(datetime.datetime.now(), "%Y-%m-%d-%H:%M:%S")
     
@@ -120,7 +120,7 @@ def createScheduleExtration(listIdToUse,reportId):
 def getInstrumentTriggerDetail(scheduleId):
     global overallArrivalTime
     header = {'Content-Type': 'application/json; odata.metadata=minimal', 'Authorization': myToken}
-    urlGetInstrumentTriggerDetail = 'https://hosted.datascopeapi.reuters.com/RestApi/v1/Extractions/ScheduleGetInstrumentTriggerDetails'
+    urlGetInstrumentTriggerDetail = 'https://selectapi.datascope.refinitiv.com/RestApi/v1/Extractions/ScheduleGetInstrumentTriggerDetails'
     
     urlForAnId = urlGetInstrumentTriggerDetail + '(Id=\'' + scheduleId + '\')'
     overallArrivalTime = None
@@ -149,8 +149,8 @@ def pollForExtraction(scheduleId):
     print("Start Polling for Extraction...")
     header = {'Content-Type': 'application/json; odata.metadata=minimal', 'Authorization': myToken}
     
-    urlGetExtractedFile = 'https://hosted.datascopeapi.reuters.com/RestApi/v1/Extractions/ExtractedFiles'
-    urlGetExtractedIds = 'https://hosted.datascopeapi.reuters.com/RestApi/v1/Extractions/ReportExtractions'
+    urlGetExtractedFile = 'https://selectapi.datascope.refinitiv.com/RestApi/v1/Extractions/ExtractedFiles'
+    urlGetExtractedIds = 'https://selectapi.datascope.refinitiv.com/RestApi/v1/Extractions/ReportExtractions'
 
     URLPollSchedule = urlCreateSchedule+'(\''+ scheduleId + '\')/LastExtraction'
    
