@@ -120,7 +120,7 @@ def createScheduleExtration(listIdToUse,reportId):
 def getInstrumentTriggerDetail(scheduleId):
     global overallArrivalTime
     header = {'Content-Type': 'application/json; odata.metadata=minimal', 'Authorization': myToken}
-    urlGetInstrumentTriggerDetail = 'https://selectapi.datascope.refinitiv.com/RestApi/v1/Extractions/ScheduleGetInstrumentTriggerDetails'
+    urlGetInstrumentTriggerDetail = 'https://selectapi.datascope.lseg.com/RestApi/v1/Extractions/ScheduleGetInstrumentTriggerDetails'
     
     urlForAnId = urlGetInstrumentTriggerDetail + '(Id=\'' + scheduleId + '\')'
     overallArrivalTime = None
@@ -149,8 +149,8 @@ def pollForExtraction(scheduleId):
     print("Start Polling for Extraction...")
     header = {'Content-Type': 'application/json; odata.metadata=minimal', 'Authorization': myToken}
     
-    urlGetExtractedFile = 'https://selectapi.datascope.refinitiv.com/RestApi/v1/Extractions/ExtractedFiles'
-    urlGetExtractedIds = 'https://selectapi.datascope.refinitiv.com/RestApi/v1/Extractions/ReportExtractions'
+    urlGetExtractedFile = 'https://selectapi.datascope.lseg.com/RestApi/v1/Extractions/ExtractedFiles'
+    urlGetExtractedIds = 'https://selectapi.datascope.lseg.com/RestApi/v1/Extractions/ReportExtractions'
 
     URLPollSchedule = urlCreateSchedule+'(\''+ scheduleId + '\')/LastExtraction'
    
@@ -288,4 +288,5 @@ if __name__ == "__main__":
             # Not strictly necessary if daemonic mode is enabled but should be done if possible
             scheduler.shutdown()
             cleanUp()
+
 
