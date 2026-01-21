@@ -9,9 +9,9 @@ statusCheckAttempts = int(10)
 Login = '<username>'
 Password = '<password>'
 
-urlCreateSchedule = 'https://selectapi.datascope.refinitiv.com/RestApi/v1/Extractions/Schedules'
-urlCreateReports = 'https://selectapi.datascope.refinitiv.com/ServiceLayer/Extractions/ReportTemplates'
-urlCreateList = 'https://selectapi.datascope.refinitiv.com/RestApi/v1/Extractions/InstrumentLists'
+urlCreateSchedule = 'https://selectapi.datascope.lseg.com/RestApi/v1/Extractions/Schedules'
+urlCreateReports = 'https://selectapi.datascope.lseg.com/ServiceLayer/Extractions/ReportTemplates'
+urlCreateList = 'https://selectapi.datascope.lseg.com/RestApi/v1/Extractions/InstrumentLists'
 
 global done
 urlFile = ''
@@ -19,7 +19,7 @@ ExtractedFileId = 0
 
 def getAuthToken(header):
     global myToken, URLpartialPath
-    urlGetToken = 'https://selectapi.datascope.refinitiv.com/RestApi/v1/Authentication/RequestToken'
+    urlGetToken = 'https://selectapi.datascope.lseg.com/RestApi/v1/Authentication/RequestToken'
     
     loginData = json.dumps({'Credentials':{'Password':Password,'Username':Login}})
     resp = requests.post(urlGetToken, loginData, headers=header)
@@ -48,7 +48,7 @@ def createInstrumentList():
 def appendInstrument(listId, iList):
     header = {'Content-Type': 'application/json; odata.metadata=minimal', 'Authorization': myToken}
 
-    urlAppendList = 'https://selectapi.datascope.refinitiv.com/RestApi/v1/Extractions/InstrumentLists(\'' + listId + '\')/DataScope.Select.Api.Extractions.InstrumentListAppendIdentifiers'
+    urlAppendList = 'https://selectapi.datascope.lseg.com/RestApi/v1/Extractions/InstrumentLists(\'' + listId + '\')/DataScope.Select.Api.Extractions.InstrumentListAppendIdentifiers'
     instrumentList = []
     for instrument in iList:
         instrumentList.append(OrderedDict([("Identifier",instrument),("IdentifierType","Ric")]))
@@ -288,3 +288,4 @@ if __name__ == "__main__":
             # Not strictly necessary if daemonic mode is enabled but should be done if possible
             scheduler.shutdown()
             cleanUp()
+
